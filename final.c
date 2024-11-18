@@ -3,23 +3,34 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define INSTRUCTION_SIZE 4
+
 int main(int argc, char *argv[]){
 
 	/* get the filename to be opened*/
+	if (argc != 2){
+		printf("Usage: ./final [INPUT FILE PATH]\n");
+		return 1;
+	}
 	char filename[1024];
 	strcpy(filename, argv[argc - 1]);
 	
 	/* get the file input*/
 	FILE *input = NULL;
 	input = fopen(filename, "rb");
-	
+	if (input == NULL){
+		perror("file open failed");
+		return 1;
+	}
+
 	fseek(input, 0L, SEEK_END);
 	long int filesize = ftell(input);
 	/* go back to start file for processing*/
 	rewind(input);
 
 	/* total file size divided by 4 bytes per instruction*/
-	uint32_t *instructions = malloc(filesize/4);
+	size_t array_size = filesize/INSTRUCTION_SIZE;
+	uint32_t *instructions = malloc(array_size);
 
 	size_t numIntegers = filesize / sizeof(uint32_t);
 
@@ -44,7 +55,11 @@ int main(int argc, char *argv[]){
 
     // Close the file and free the memory
     fclose(input);
-    free(instructions);
+	printf("eeee");
+    int i = 0;
+	for (i = 0; i < array_size; i++){
+		printf("Instruction number %d: %u\n", i + 1, instructions[i]);
+	}
 	
 	
 	int instr;
